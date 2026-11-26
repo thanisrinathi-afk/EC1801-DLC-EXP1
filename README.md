@@ -20,11 +20,45 @@ exp1_boolean_min_tb.v	Verilog testbench
 exp1_boolean_min.vcd	VCD waveform dump generated during simulation
 
 ## Verilog Program
+module boolean(
+    input A,
+    input B,
+    input C,
+    input D,
+    output F
+);
+    assign F = (~B & ~D) | (B & D);
 
+endmodule
 
 
 ## TestBench Program
+module tb;
+    reg A, B, C, D;
+    wire F;
 
+    boolean dut (
+        .A(A),
+        .B(B),
+        .C(C),
+        .D(D),
+        .F(F)
+    );
+
+    initial begin
+        $dumpfile("boolean.vcd");
+        $dumpvars(0, tb);
+
+        $monitor("Time=%0t A=%b B=%b C=%b D=%b | F=%b", $time, A, B, C, D, F);
+
+        // apply all 16 combinations
+        {A, B, C, D} = 4'b0000;
+        repeat (15) #10 {A, B, C, D} = {A, B, C, D} + 1;
+
+        #10 $finish;
+    end
+
+endmodule
 
 
 
@@ -33,8 +67,8 @@ exp1_boolean_min.vcd	VCD waveform dump generated during simulation
 
     
 ## Truth Table
- 
-<img width="795" height="311" alt="image" src="https://github.com/user-attachments/assets/dd4ba5b9-016b-4ae5-a693-f309c60c4c0e" />
+ <img width="888" height="475" alt="Screenshot 2026-11-26 153733" src="https://github.com/user-attachments/assets/c0fe964c-480c-477a-a789-d8e75ed534f8" />
+
 
 ## Simulation Procedure
 STEP 1 – Open Terminal
@@ -45,7 +79,7 @@ STEP 2 – Load Synopsys Environment
 source /synopsys/start.sh
 
 STEP 3 – Compile Using VCS
-vcs exp1_boolean_min.v exp1_boolean_min_tb.v -full64
+vcs boolean.v tb.v -full64
  
 If compilation is successful, VCS generates the simulation executable:
 simv
@@ -54,7 +88,7 @@ STEP 4 – Run Simulation
 ./simv
 The terminal displays the input combinations and corresponding output F.
 A VCD waveform file is also generated:
-exp1_boolean_min.vcd
+boolean.vcd
 
 STEP 5 – Open DVE
 dve -full64
@@ -84,6 +118,7 @@ was minimized to F=B'D'+BD.
 and successfully implemented using Verilog HDL.
 
 ## OUTPUT
+<img width="1845" height="1017" alt="Screenshot 2026-11-26 153936" src="https://github.com/user-attachments/assets/be3a32b4-7b8e-4255-b984-be71291129f9" />
 
 
 
